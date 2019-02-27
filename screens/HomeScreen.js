@@ -22,15 +22,19 @@ export default class HomeScreen extends React.Component {
 
   state = {
     todos: [],
-    inputed: ""
+    inputed: "",
+    isPressed: false
   };
 
   addtodo = () => {
 
-    if(this.state.inputed.trim().length > 0)
+    if(this.state.inputed.trim().length > 0){
+      let todo = {task: this.state.inputed, complete: true}
       this.setState({
-        todos: this.state.todos.concat(this.state.inputed)
+        todos: this.state.todos.concat(todo),
+        inputed: ""
       });
+    }
   }
 
   delTodo = (index) => {
@@ -41,26 +45,47 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+  pressing = (item) => {
+    this.setState({
+
+    })
+  };
+
   render() {
-    let todos = this.state.todos.map((todo) => todo)
     return (
       <View style={styles.container}>
       <View style={styles.paddingInput}>
         <TextInput
           style={styles.TextInput}
           placeholder="Add"
+          value={this.state.inputed}
           onChangeText={(text) => this.setState({inputed: text})}
           onSubmitEditing={this.addtodo}
          />
       </View>
         <View style={styles.container}>
          <FlatList
-           data={todos}
+         style={styles.list}
+           data={this.state.todos}
            renderItem={({item, index}) =>
 
-           <View>
-            <Text style={styles.item}>{item} </Text>
-            <Button title="x" onPress={() => this.delTodo(index)}/>
+           <View style={styles.listContent}>
+            <Text style={[
+              item.complete
+              ? {backgroundColor: "#ffae00"}:{backgroundColor: "#ff0000"}, styles.listitem
+            ]}
+            onPress={() =>{
+
+              let todos = this.state.todos
+              alert(todos[index].task)
+              todos[index].complete = !todos[index].complete
+              this.setState({
+                todos: todos
+              })
+            }
+
+            }>{item.task}</Text>
+            <Button style={styles.buttdel} title="X" onPress={() => this.delTodo(index)}/>
            </View>
          }
          />
@@ -114,86 +139,36 @@ const styles = StyleSheet.create({
   ListTodos:{
     backgroundColor: '#ffae00',
   },
+  buttdel:{
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 18,
+    zIndex: 990,
+  },
+
+  TextInput: {
+    fontSize: 18,
+  },
+
+  listitem: {
+    width: "100%",
+    padding: 12,
+    fontSize: 18,
+    marginBottom: 2
+  },
+  listContent:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
   container: {
    flex: 1,
    paddingTop: 10
   },
   paddingInput:{
     paddingTop: 20,
-    paddingLeft: 150,
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-  developmentModeText: {
+    paddingLeft: 20,
     marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 1,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
   },
   navigationFilename: {
     marginTop: 5,
